@@ -23,10 +23,6 @@
   debug:
     msg: "{{ infomation1 }}"
 
-- name: fix brew link error
-  become: yes
-  become_user: "{{ ansible_user }}"
-  shell: sudo chown -R "{{ ansible_user }}":admin /usr/local/Cellar
 
 - name: Set macos version
   set_fact:
@@ -139,8 +135,14 @@
   debug:
     msg: "{{ infomation }}"
 
+
+- name: fix brew link error
+  become: yes
+  become_user: "{{ ansible_user }}"
+  shell: sudo chown -R "{{ ansible_user }}":admin /usr/local/Cellar
+  
 - name: Install Build Tool Packages (NOT for macOS 10.12)
-  become: yes.github/workflows/build_mac.yml
+  become: yes
   become_user: "{{ ansible_user }}"
   homebrew: "name={{ item }} state=present"
   failed_when: false
