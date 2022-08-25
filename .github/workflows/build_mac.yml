@@ -1,12 +1,10 @@
 name: Ansible Playbook
 
 on:
-  pull_request:
+  push:
     paths:
     - .github/workflows/build_mac.yml
     - ansible/playbooks/AdoptOpenJDK_Unix_Playbook/**
-    branches:         
-    - master
 
 jobs:
   build-macos:
