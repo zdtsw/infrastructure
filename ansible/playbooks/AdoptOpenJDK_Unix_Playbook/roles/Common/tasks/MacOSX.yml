@@ -140,16 +140,15 @@
   become: yes
   become_user: "{{ ansible_user }}"
   shell: sudo chown -R "{{ ansible_user }}":admin /usr/local/Cellar
-  
-- name: Install Build Tool Packages (NOT for macOS 10.12)
-  become: yes
-  become_user: "{{ ansible_user }}"
-  homebrew: "name={{ item }} state=present"
-  failed_when: false
-  with_items: "{{ Build_Tool_Packages_NOT_10_12 }}"
-  when:
-    - not (macos_version_number | regex_search("10.12"))
-  tags: build_tools
+
+# - name: Install Build Tool Packages (NOT for macOS 10.12)
+#   become: yes
+#   become_user: "{{ ansible_user }}"
+#   homebrew: "name={{ item }} state=present"
+#   with_items: "{{ Build_Tool_Packages_NOT_10_12 }}"
+#   when:
+#     - not (macos_version_number | regex_search("10.12"))
+#   tags: build_tools
 
 - name: Install Build Tool Casks
   become: yes
