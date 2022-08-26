@@ -127,15 +127,6 @@
   with_items: "{{ Build_Tool_Packages }}"
   tags: build_tools
 
-- name: check if instealld2
-  shell: ansible-playbook --version; python --version
-  register: infomation
-
-- name: print info
-  debug:
-    msg: "{{ infomation }}"
-
-
 # - name: fix brew link error
 #   become: yes
 #   become_user: "{{ ansible_user }}"
