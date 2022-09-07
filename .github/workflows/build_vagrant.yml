@@ -11,16 +11,29 @@ on:
 jobs:
   build-solaris:
     name: Solaris
-    runs-on: macos-11
+    runs-on: ubuntu-22.04 
     steps:
 
     - uses: actions/checkout@v2
 
-    - name: Install dependencies
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies vagrant
       run: |
-        brew install ansible
-        brew install --cask virtualbox
-        
+        wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+        sudo apt update 
+        sudo apt install vagrant
+
+    - name: Install dependencies virtualbox
+      run: |
+        wget -O- https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --dearmor --yes --output /usr/share/keyrings/oracle-virtualbox-2016.gpg
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.gpg] https://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib " | sudo tee /etc/apt/sources.list.d/virtualbox.list 
+        sudo apt update 
+        sudo apt install  virtualbox
 
     - name: Setup Vagrant VM
       run: |
@@ -29,7 +42,7 @@ jobs:
         rm -f id_rsa.pub id_rsa
         # Copy the machine's ssh key for the VMs to use, after removing prior files
         ssh-keygen -q -f $PWD/id_rsa -t rsa -N ''
-        vagrant up
+        vagrant up --provider=virtualbox
         vagrantPORT=$(vagrant port | grep host | awk '{ print $4 }')
         rm -f playbooks/AdoptOpenJDK_Unix_Playbook/hosts.unx
         echo "[127.0.0.1]:${vagrantPORT}" >> playbooks/AdoptOpenJDK_Unix_Playbook/hosts.unx
